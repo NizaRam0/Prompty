@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ImageGenerationResource extends JsonResource
+class PromptGenerationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,7 +23,7 @@ class ImageGenerationResource extends JsonResource
             'mime_type' => $this->mime_type,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-             'user' => new UserResource($this->whenLoaded('user')) // Assuming you have a relationship defined in your ImageGeneration model to get the user details
+             'user' => new UserResource($this->whenLoaded('user')) // Assuming you have a relationship defined in your PromptGeneration model to get the user details
          ];
     }
 }

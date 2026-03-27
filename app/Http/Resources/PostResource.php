@@ -22,7 +22,7 @@ class PostResource extends JsonResource
             'author_id' => $this->author_id,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-            'author' =>  new UserResource($this->whenLoaded('author')) // Assuming you have a relationship defined in your Post model to get the author details
+        'author' =>  new UserResource($this->author)
         ];
     }
 }

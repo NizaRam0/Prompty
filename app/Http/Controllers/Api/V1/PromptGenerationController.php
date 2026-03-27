@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Services\OpenAIService;
-use App\Models\ImageGeneration;
-use App\Http\Resources\ImageGenerationResource;
-class ImageGenerationController extends Controller
+use App\Models\PromptGeneration;
+use App\Http\Resources\PromptGenerationResource;
+class PromptGenerationController extends Controller
+
 {
     public function __construct(private OpenAIService $openAIService)
     {
@@ -16,8 +17,8 @@ class ImageGenerationController extends Controller
     public function index() //return all image generations
     {
         $user=request()->user();
-        $imageGenerations=$user->imageGenerations()->latest()->paginate(10);
-        return ImageGenerationResource::collection($imageGenerations);
+        $PromptGeneration=$user->PromptGenerations()->latest()->paginate(10);
+        return PromptGenerationResource::collection($PromptGeneration);
     }
 
     public function store(Request $request) //generate image from prompt
@@ -42,14 +43,14 @@ class ImageGenerationController extends Controller
 
         $this->openAIService->generatePromptForImage($image);
          $generatedPrompt = $this->openAIService->generatePromptForImage($image);
-         $imageGeneration= $user->imageGenerations()->create([
+         $promptGeneration= $user->PromptGenerations()->create([
             'generated_prompt' => $generatedPrompt,
             'image_path' => $imagePath,
             'original_file_name' => $originalName,
             'file_size' => $image->getSize(),
             'mime_type' => $image->getMimeType(),
          ]);
-         return new ImageGenerationResource($imageGeneration);
+         return new PromptGenerationResource($promptGeneration);
     
         }
 }

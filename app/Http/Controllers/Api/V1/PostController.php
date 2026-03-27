@@ -8,7 +8,6 @@ use App\Http\Resources\PostResource;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use App\Models\Post;
-use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -17,9 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $user=request()->user();
-        $posts=$user->posts()->get();
-        return PostResource::collection($posts);
+        return PostResource::collection(Post::all());
         }
 
     /**
@@ -28,10 +25,9 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
    $data= $request->validated();
-   $data['author_id'] = $request->user()->id; // Assuming the author_id is the authenticated user's ID
+   $data['author_id'] = 1; // Assuming the author_id is 1 for demonstration purposes
    $post= Post::create($data);
-   return new PostResource($post);
-    
+   return response()->json($post,201);
     
     
     // return response()->json([  
@@ -49,14 +45,10 @@ class PostController extends Controller
     public function show(Post $post)//id or use route model binding
     {
        // $post = Post::findOrFail($id);
-       $user = request()->user(); 
-       //if ($user->id !== $post->author_id) {
-        abort_if(Auth::id() != $post->author_id, 403, 'Unauthorized access to this post');
-     //  
         return 
         response()->json([
             "message" => "Post retrieved successfully",
-            "data" => new PostResource($post)
+            "data" => $post
             
             ])->setStatusCode(200);
            
@@ -67,13 +59,11 @@ class PostController extends Controller
      */
     public function update(StorePostRequest $request, Post $post)
     {
-     abort_if(Auth::id() != $post->author_id, 403, 'Unauthorized access to this post');
-
         $data = $request->validated();
         $post->update($data);
         return response()->json([
             "message" => "Post updated successfully",
-            "data" => new PostResource($post)     // instead of returning the whole post object, you can return only the updated fields if you prefer
+            "data" => $post     // instead of returning the whole post object, you can return only the updated fields if you prefer
             // [
             //     "id" => $post->id,
             //     "title" => $data['title'],
@@ -87,7 +77,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        abort_if(Auth::id() != $post->author_id, 403, 'Unauthorized access to this post');
         $post->delete();
         //return response()->noContent();
     }

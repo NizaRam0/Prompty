@@ -9,14 +9,10 @@ class Post extends Model
 {
     protected $fillable = ['title', 'content', 'author_id'];
 
-    public function author(): BelongsTo
+public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
-    }
 
-    public function user(): BelongsTo
-    {
-        return $this->author();
     }
 
 }

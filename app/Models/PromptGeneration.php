@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ImageGeneration extends Model
+class PromptGeneration extends Model
 {
 protected $fillable = [
     'generated_prompt',
