@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 
 class PromptGenerationResource extends JsonResource
 {
@@ -15,13 +15,14 @@ class PromptGenerationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $imageUrl = $this->image_path
-            ? URL::temporarySignedRoute(
-                'prompt-generations.image',
-                now()->addMinutes(30),
-                ['promptGeneration' => $this->id]
-            )
-            : null;
+        $imageUrl = null;
+
+        if ($this->image_path) {
+            $storageUrl = Storage::url($this->image_path);
+            $imageUrl = str_starts_with($storageUrl, 'http')
+                ? $storageUrl
+                : $request->getSchemeAndHttpHost() . $storageUrl;
+        }
 
         return [
             'id' => $this->id,

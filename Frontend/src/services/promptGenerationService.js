@@ -23,11 +23,6 @@ function normalizeImageUrl(imageUrl) {
   try {
     const parsed = new URL(raw)
 
-    // Signed URLs must remain unchanged or Laravel signature validation fails.
-    if (parsed.searchParams.has('signature') && parsed.searchParams.has('expires')) {
-      return parsed.toString()
-    }
-
     // If backend returns localhost but app is not running on that same origin,
     // rebuild URL from configured API origin so preview stays reachable.
     const isLocalHost = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1'
