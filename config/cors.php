@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],//allow all HTTP methods for CORS
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],//allow only the frontend URL for CORS
+    'allowed_origins' => [env('FRONTEND_URL', 'https://prompty-green.vercel.app/register')],//allow only the frontend URL for CORS
 
     'allowed_origins_patterns' => [],
 
