@@ -1,49 +1,5 @@
 // Service layer for prompt-generation features only (upload and history).
 import { apiGet, apiPostForm } from './apiClient'
-import { API_ROOT_URL } from '../utils/constants'
-
-function normalizeImageUrl(imageUrl) {
-  if (!imageUrl) return null
-
-  const raw = String(imageUrl).trim()
-  if (!raw) return null
-
-  let apiOrigin = ''
-  try {
-    apiOrigin = new URL(API_ROOT_URL).origin
-  } catch {
-    apiOrigin = ''
-  }
-
-  // Handle relative URLs like /storage/uploads/... from backend resources.
-  if (raw.startsWith('/')) {
-    return apiOrigin ? `${apiOrigin}${raw}` : raw
-  }
-
-  try {
-    const parsed = new URL(raw)
-
-    // If backend returns localhost but app is not running on that same origin,
-    // rebuild URL from configured API origin so preview stays reachable.
-    const isLocalHost = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1'
-    if (isLocalHost && apiOrigin) {
-      return `${apiOrigin}${parsed.pathname}${parsed.search}`
-    }
-
-    return parsed.toString()
-  } catch {
-    return raw
-  }
-}
-
-function normalizeItem(item) {
-  if (!item || typeof item !== 'object') return item
-
-  return {
-    ...item,
-    image_url: normalizeImageUrl(item.image_url),
-  }
-}
 
 // Uploads one image and returns normalized generated item payload.
 export async function uploadImageAndGeneratePrompt(file) {
@@ -53,7 +9,7 @@ export async function uploadImageAndGeneratePrompt(file) {
   const response = await apiPostForm('/prompt-generations', formData)
 
   // API may return wrapped or direct payload depending on resource formatting.
-  return normalizeItem(response?.data || response)
+  return response?.data || response
 }
 
 // Sort function applied client-side so UI can provide sorting without backend dependency.
@@ -90,9 +46,7 @@ export async function fetchPromptHistory({ page, perPage, search, mimeType, sort
     mime_type: mimeType,
   })
 
-  const items = Array.isArray(response?.data)
-    ? response.data.map(normalizeItem)
-    : []
+  const items = Array.isArray(response?.data) ? response.data : []
   const sortedItems = sortItems(items, sortBy, sortDirection)
 
   return {
