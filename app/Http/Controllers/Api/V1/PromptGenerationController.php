@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Services\OpenAIService;
+use App\Services\OpenAiService;
 use App\Models\PromptGeneration;
 use App\Http\Requests\GeneratePromptRequest;
 use App\Http\Resources\PromptGenerationResource;
@@ -16,7 +16,7 @@ use Dedoc\Scramble\Attributes\Group;
 class PromptGenerationController extends Controller
 
 {
-    public function __construct(private OpenAIService $openAIService)
+    public function __construct(private OpenAiService $openAiService)
     {
     }
 
@@ -97,8 +97,8 @@ class PromptGenerationController extends Controller
         $safeFileName = $sanitizedName . '_' . time() .'_'.Str::random(10). '.' . $extension;
         $imagePath=$image->storeAs('uploads/images', $safeFileName,'public');
 
-        //$this->openAIService->generatePromptForImage($image);
-         $generatedPrompt = $this->openAIService->generatePromptForImage($image);
+        //$this->openAiService->generatePromptForImage($image);
+         $generatedPrompt = $this->openAiService->generatePromptForImage($image);
          $promptGeneration= $user->PromptGenerations()->create([
             'generated_prompt' => $generatedPrompt,
             'image_path' => $imagePath,
