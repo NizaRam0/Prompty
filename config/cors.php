@@ -1,5 +1,12 @@
 <?php
 
+$frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
+$frontendParts = parse_url($frontendUrl);
+
+$frontendOrigin = isset($frontendParts['scheme'], $frontendParts['host'])
+    ? $frontendParts['scheme'].'://'.$frontendParts['host'].(isset($frontendParts['port']) ? ':'.$frontendParts['port'] : '')
+    : 'http://localhost:3000';
+
 return [
 
     /*
@@ -19,7 +26,7 @@ return [
 
     'allowed_methods' => ['*'],//allow all HTTP methods for CORS
 
-    'allowed_origins' => [env('FRONTEND_URL', 'https://prompty-green.vercel.app/register')],//allow only the frontend URL for CORS
+    'allowed_origins' => [$frontendOrigin],//allow only the frontend origin for CORS
 
     'allowed_origins_patterns' => [],
 
