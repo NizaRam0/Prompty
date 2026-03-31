@@ -205,6 +205,23 @@ onBeforeUnmount(() => {
     }
 }
 
+@media (max-width: 640px) {
+    .upload-panel {
+        padding: 0.85rem;
+    }
+
+    .preview-wrap {
+        margin-top: 0.65rem;
+    }
+
+    .preview-image {
+        max-height: 210px;
+        width: 88%;
+        margin: 0 auto;
+        display: block;
+    }
+}
+
 @keyframes reveal {
     from {
         opacity: 0;

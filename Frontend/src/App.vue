@@ -119,7 +119,7 @@ onUnmounted(() => {
 
 <style scoped>
 .center-tabs-wrap {
-    margin-top: 4%;
+    margin-top: 1rem;
 }
 
 .center-tabs {
@@ -158,6 +158,10 @@ onUnmounted(() => {
 }
 
 @media (max-width: 640px) {
+    .center-tabs-wrap {
+        margin-top: 1.35rem;
+    }
+
     .center-tabs {
         width: 100%;
     }
