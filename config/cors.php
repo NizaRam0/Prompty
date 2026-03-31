@@ -26,9 +26,15 @@ return [
 
     'allowed_methods' => ['*'],//allow all HTTP methods for CORS
 
-    'allowed_origins' => [$frontendOrigin],//allow only the frontend origin for CORS
+    'allowed_origins' => [
+        $frontendOrigin,
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+    ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://[a-zA-Z0-9-]+\.vercel\.app$#',
+    ],
 
     'allowed_headers' => ['*'],
 
