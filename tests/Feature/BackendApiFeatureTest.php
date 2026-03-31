@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\URL;
 use Laravel\Sanctum\Sanctum;
 
 test('guest cannot access protected api routes', function () {
-    $this->getJson('/api/user')->assertStatus(401);
+    $this->getJson('/api/v1/user/1')->assertStatus(401);
     $this->getJson('/api/v1/posts')->assertStatus(401);
     $this->postJson('/api/v1/prompt-generations')->assertStatus(401);
 });
@@ -169,13 +169,15 @@ test('authenticated user endpoint returns current user', function () {
     $user = User::factory()->create();
     Sanctum::actingAs($user);
 
-    $response = $this->getJson('/api/user');
+    $response = $this->getJson("/api/v1/user/{$user->id}");
 
     $response
         ->assertOk()
         ->assertJson([
-            'id' => $user->id,
-            'email' => $user->email,
+            'data' => [
+                'id' => $user->id,
+                'email' => $user->email,
+            ],
         ]);
 });
 
