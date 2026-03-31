@@ -142,3 +142,19 @@ export async function apiPostJson(path, body = {}, options = {}) {
 
   return (await safeJson(response)) || {}
 }
+
+// DELETE helper for resource removal endpoints.
+export async function apiDelete(path) {
+  const url = buildApiUrl(path)
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: buildHeaders(),
+  })
+
+  if (!response.ok) {
+    throw await parseError(response)
+  }
+
+  return (await safeJson(response)) || {}
+}

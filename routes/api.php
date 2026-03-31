@@ -15,7 +15,7 @@ Route::middleware(['auth:sanctum','throttle:api'])->group(function () {
     Route::apiResource('posts',PostController::class);
    
     Route::apiResource('prompt-generations', PromptGenerationController::class)
-    ->only(['index', 'store']);
+    ->only(['index', 'store', 'destroy']);
     
     //User Controller routes
     Route::apiResource('user',UserController::class) 

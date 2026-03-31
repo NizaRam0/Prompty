@@ -7,13 +7,21 @@ defineProps({
         type: Array,
         default: () => [],
     },
+    deletingId: {
+        type: [Number, String, null],
+        default: null,
+    },
 });
 
-const emit = defineEmits(["copy"]);
+const emit = defineEmits(["copy", "delete"]);
 
 // Emits selected prompt content so parent can execute copy and show feedback.
 function copyText(prompt) {
     emit("copy", prompt);
+}
+
+function deleteItem(id) {
+    emit("delete", id);
 }
 </script>
 
@@ -43,13 +51,23 @@ function copyText(prompt) {
                     }}</span>
                 </div>
             </div>
-            <button
-                class="btn btn-secondary"
-                type="button"
-                @click="copyText(item.generated_prompt)"
-            >
-                Copy
-            </button>
+            <div class="history-actions">
+                <button
+                    class="btn btn-secondary"
+                    type="button"
+                    @click="copyText(item.generated_prompt)"
+                >
+                    Copy
+                </button>
+                <button
+                    class="btn btn-danger"
+                    type="button"
+                    :disabled="deletingId === item.id"
+                    @click="deleteItem(item.id)"
+                >
+                    {{ deletingId === item.id ? "Deleting..." : "Delete" }}
+                </button>
+            </div>
         </article>
     </section>
 </template>
@@ -72,6 +90,16 @@ function copyText(prompt) {
         transform 0.2s ease,
         border-color 0.25s ease,
         background 0.25s ease;
+}
+
+.history-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.history-actions .btn {
+    min-width: 92px;
 }
 
 .history-item:hover {
@@ -161,8 +189,11 @@ function copyText(prompt) {
     }
 
     .history-item .btn {
-        grid-column: 1 / -1;
         width: 100%;
+    }
+
+    .history-actions {
+        grid-column: 1 / -1;
     }
 }
 </style>

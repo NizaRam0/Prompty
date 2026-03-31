@@ -25,12 +25,24 @@ async function copyPrompt() {
         copied.value = false;
     }, 1800);
 }
+async function deletePrompt() {
+     if (!props.item?.generated_prompt) return;
+     await props.$emit('delete', props.item.id);
+}
 </script>
 
 <template>
     <article class="result-card glass-card">
         <div class="result-header">
             <h2 class="section-title">Generated Prompt</h2>
+            <button
+                class="btn btn-secondary"
+                type="button"
+                :disabled="!hasPrompt"
+                @click="copyPrompt"
+            >
+                {{ copied ? "Copied" : "Copy Prompt" }}
+            </button>
             <button
                 class="btn btn-secondary"
                 type="button"

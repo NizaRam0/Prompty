@@ -148,6 +148,18 @@ body {
   box-shadow: 0 0 0 1px var(--accent-soft);
 }
 
+.btn-danger {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--status-error), #dc2626);
+  border-color: rgba(248, 113, 113, 0.55);
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.28);
+}
+
+.btn-danger:not(:disabled):hover {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25);
+}
+
 .btn-ghost {
   color: var(--text-secondary);
   background: transparent;

@@ -1,5 +1,5 @@
 // Service layer for prompt-generation features only (upload and history).
-import { apiGet, apiPostForm } from './apiClient'
+import { apiDelete, apiGet, apiPostForm } from './apiClient'
 import { API_BASE_URL } from '../utils/constants'
 
 function getApiOrigin() {
@@ -115,4 +115,13 @@ export async function fetchPromptHistory({ page, perPage, search, mimeType, sort
     total: response?.meta?.total || sortedItems.length,
     lastPage: response?.meta?.last_page || 1,
   }
+}
+
+// Deletes one prompt-generation history item by id.
+export async function deletePromptHistoryItem(id) {
+  if (!id) {
+    throw new Error('Missing history item id.')
+  }
+
+  return apiDelete(`/prompt-generations/${id}`)
 }

@@ -5,9 +5,13 @@ import HistoryFilters from "../components/HistoryFilters.vue";
 import HistoryTable from "../components/HistoryTable.vue";
 import PaginationControls from "../components/PaginationControls.vue";
 import InlineAlert from "../components/InlineAlert.vue";
-import { fetchPromptHistory } from "../services/promptGenerationService";
+import {
+    deletePromptHistoryItem,
+    fetchPromptHistory,
+} from "../services/promptGenerationService";
 
 const loading = ref(false);
+const deletingId = ref(null);
 const errorMessage = ref("");
 const infoMessage = ref("");
 
@@ -79,6 +83,36 @@ async function copyFromHistory(promptText) {
     }, 1800);
 }
 
+async function deleteFromHistory(id) {
+    if (!id || deletingId.value) return;
+
+    const confirmed = window.confirm(
+        "Delete this prompt from your history? This action cannot be undone.",
+    );
+
+    if (!confirmed) return;
+
+    deletingId.value = id;
+    errorMessage.value = "";
+    infoMessage.value = "";
+
+    try {
+        await deletePromptHistoryItem(id);
+
+        const currentPage = historyState.value.currentPage || 1;
+        const hasSingleItemOnPage = historyState.value.items.length === 1;
+        const targetPage =
+            hasSingleItemOnPage && currentPage > 1 ? currentPage - 1 : currentPage;
+
+        await loadHistory(targetPage);
+        infoMessage.value = "Prompt deleted successfully.";
+    } catch (error) {
+        errorMessage.value = error?.message || "Failed to delete prompt.";
+    } finally {
+        deletingId.value = null;
+    }
+}
+
 onMounted(() => {
     loadHistory(1);
 });
@@ -102,7 +136,12 @@ onMounted(() => {
         <p v-if="loading" class="loading-text">Loading history...</p>
 
         <template v-else>
-            <HistoryTable :items="historyState.items" @copy="copyFromHistory" />
+            <HistoryTable
+                :items="historyState.items"
+                :deleting-id="deletingId"
+                @copy="copyFromHistory"
+                @delete="deleteFromHistory"
+            />
             <PaginationControls
                 :current-page="historyState.currentPage"
                 :last-page="historyState.lastPage"

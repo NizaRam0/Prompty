@@ -110,6 +110,19 @@ class PromptGenerationController extends Controller
          return new PromptGenerationResource($promptGeneration);
     
         }
+    #[Endpoint(title: 'Delete Prompt Generation', description: 'Delete one prompt generation that belongs to the authenticated user.')]
+    public function destroy(Request $request, PromptGeneration $promptGeneration)
+    {
+        if ($promptGeneration->user_id !== $request->user()->id) {
+            abort(404);
+        }
+
+        $promptGeneration->delete();
+
+        return response()->json([
+            'message' => 'Prompt generation deleted successfully',
+        ]);
+    }
 
     private function resolveUploadDisk(): string
     {
