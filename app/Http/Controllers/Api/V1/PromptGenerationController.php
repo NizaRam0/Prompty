@@ -126,7 +126,7 @@ class PromptGenerationController extends Controller
 
         if (is_array($availableDisks)
             && array_key_exists('s3', $availableDisks)
-            && !empty(env('AWS_BUCKET'))) {
+            && !empty(config('filesystems.disks.s3.bucket'))) {
             return 's3';
         }
 
