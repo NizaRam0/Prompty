@@ -95,7 +95,9 @@ class PromptGenerationController extends Controller
          * 
          */
         $safeFileName = $sanitizedName . '_' . time() .'_'.Str::random(10). '.' . $extension;
-        $imagePath=$image->storeAs('uploads/images', $safeFileName,'public');
+        $configuredDisk = config('filesystems.default', 'public');
+        $uploadDisk = $configuredDisk === 'local' ? 'public' : $configuredDisk;
+        $imagePath = $image->storePubliclyAs('uploads/images', $safeFileName, $uploadDisk);
 
         //$this->openAiService->generatePromptForImage($image);
          $generatedPrompt = $this->openAiService->generatePromptForImage($image);

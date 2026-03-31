@@ -8,6 +8,33 @@ use Illuminate\Support\Facades\Storage;
 
 class PromptGenerationResource extends JsonResource
 {
+    private function resolveDiskForPath(string $path): string
+    {
+        $configuredDisk = config('filesystems.default', 'public');
+        $candidateDisks = array_unique([
+            $configuredDisk,
+            $configuredDisk === 'local' ? 'public' : null,
+            'public',
+            's3',
+        ]);
+
+        foreach ($candidateDisks as $disk) {
+            if (!is_string($disk) || $disk === '') {
+                continue;
+            }
+
+            try {
+                if (Storage::disk($disk)->exists($path)) {
+                    return $disk;
+                }
+            } catch (\Throwable) {
+                continue;
+            }
+        }
+
+        return $configuredDisk === 'local' ? 'public' : $configuredDisk;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -18,7 +45,8 @@ class PromptGenerationResource extends JsonResource
         $imageUrl = null;
 
         if ($this->image_path) {
-            $storageUrl = Storage::url($this->image_path);
+            $disk = $this->resolveDiskForPath($this->image_path);
+            $storageUrl = Storage::disk($disk)->url($this->image_path);
             $imageUrl = str_starts_with($storageUrl, 'http')
                 ? $storageUrl
                 : $request->getSchemeAndHttpHost() . $storageUrl;
