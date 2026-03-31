@@ -95,9 +95,8 @@ class PromptGenerationController extends Controller
          * 
          */
         $safeFileName = $sanitizedName . '_' . time() .'_'.Str::random(10). '.' . $extension;
-        $configuredDisk = config('filesystems.default', 'public');
-        $uploadDisk = $configuredDisk === 'local' ? 'public' : $configuredDisk;
-        $imagePath = $image->storePubliclyAs('uploads/images', $safeFileName, $uploadDisk);
+        $uploadDisk = $this->resolveUploadDisk();
+        $imagePath = $image->storeAs('uploads/images', $safeFileName, $uploadDisk);
 
         //$this->openAiService->generatePromptForImage($image);
          $generatedPrompt = $this->openAiService->generatePromptForImage($image);
@@ -111,4 +110,26 @@ class PromptGenerationController extends Controller
          return new PromptGenerationResource($promptGeneration);
     
         }
+
+    private function resolveUploadDisk(): string
+    {
+        $configuredDisk = config('filesystems.default', 'public');
+        $availableDisks = config('filesystems.disks', []);
+
+        if (is_string($configuredDisk)
+            && $configuredDisk !== ''
+            && is_array($availableDisks)
+            && array_key_exists($configuredDisk, $availableDisks)
+            && $configuredDisk !== 'local') {
+            return $configuredDisk;
+        }
+
+        if (is_array($availableDisks)
+            && array_key_exists('s3', $availableDisks)
+            && !empty(env('AWS_BUCKET'))) {
+            return 's3';
+        }
+
+        return 'public';
+    }
 }
