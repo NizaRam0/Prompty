@@ -1,7 +1,7 @@
 // Shared constants used across pages/components to keep rules centralized and easy to update.
 
 // Backend API base URL. You can override this via Vite env if needed.
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1'
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://prompty-main-d04zpb.laravel.cloud/api/v1'
 
 // Root API URL used by auth endpoints that are not under /v1.
 export const API_ROOT_URL = API_BASE_URL.replace(/\/v1\/?$/, '')
