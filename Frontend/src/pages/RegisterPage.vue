@@ -43,8 +43,7 @@ async function submitRegister() {
         <article class="auth-card glass-card">
             <h2 class="section-title">Create Account</h2>
             <p class="muted">
-                Register once, then token is stored automatically for API
-                access.
+                Register a new account to start generating cinematic prompts with AI.
             </p>
 
             <InlineAlert

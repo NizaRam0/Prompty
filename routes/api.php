@@ -6,6 +6,10 @@ use App\Http\Controllers\Api\V1\PostController;
 use function Ramsey\Uuid\v1;
 use App\Http\Controllers\Api\V1\PromptGenerationController;
 use App\Http\Controllers\Api\V1\UserController;
+
+Route::get('v1/prompt-generations/{promptGeneration}/image', [PromptGenerationController::class, 'image'])
+    ->name('prompt-generations.image')
+    ->middleware('signed');
  
 Route::middleware(['auth:sanctum','throttle:api'])->group(function () {
     // Route::get('/user', function (Request $request) {

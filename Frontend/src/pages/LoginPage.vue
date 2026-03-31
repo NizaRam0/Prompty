@@ -71,8 +71,8 @@ function toggleForgotPanel() {
         <article class="auth-card glass-card">
             <h2 class="section-title">Sign In</h2>
             <p class="muted">
-                Use your existing account to authenticate and continue.
-            </p>
+            Login to your account to start generating cinematic prompts with AI. No account? <RouterLink to="/register">Create one</RouterLink>. 
+                </p>
 
             <InlineAlert
                 v-if="errorMessage"

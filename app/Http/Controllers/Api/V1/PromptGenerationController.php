@@ -11,6 +11,7 @@ use App\Http\Requests\GeneratePromptRequest;
 use App\Http\Resources\PromptGenerationResource;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\Group;
+use Illuminate\Support\Facades\Storage;
 
 #[Group('Prompt Generations', 'Upload images and generate prompts', 10)]
 class PromptGenerationController extends Controller
@@ -109,4 +110,22 @@ class PromptGenerationController extends Controller
          return new PromptGenerationResource($promptGeneration);
     
         }
+
+    #[Endpoint(title: 'Show Prompt Generation Image', description: 'Serve a stored source image via signed URL.')]
+    public function image(PromptGeneration $promptGeneration)
+    {
+        $disk = Storage::disk('public');
+
+        if (!$promptGeneration->image_path || !$disk->exists($promptGeneration->image_path)) {
+            abort(404, 'Image not found.');
+        }
+
+        return $disk->response(
+            $promptGeneration->image_path,
+            $promptGeneration->original_file_name,
+            [
+                'Content-Type' => $promptGeneration->mime_type ?: 'application/octet-stream',
+            ]
+        );
+    }
 }

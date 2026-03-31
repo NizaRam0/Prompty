@@ -2,11 +2,12 @@
 
 // Converts bytes to readable labels like KB/MB so history rows are easier to scan.
 export function formatBytes(bytes) {
-  if (!Number.isFinite(bytes) || bytes <= 0) return '0 B'
+  const valueInBytes = Number(bytes)
+  if (!Number.isFinite(valueInBytes) || valueInBytes <= 0) return '0 B'
 
   const units = ['B', 'KB', 'MB', 'GB']
-  const unitIndex = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1)
-  const value = bytes / (1024 ** unitIndex)
+  const unitIndex = Math.min(Math.floor(Math.log(valueInBytes) / Math.log(1024)), units.length - 1)
+  const value = valueInBytes / (1024 ** unitIndex)
   return `${value.toFixed(unitIndex === 0 ? 0 : 2)} ${units[unitIndex]}`
 }
 

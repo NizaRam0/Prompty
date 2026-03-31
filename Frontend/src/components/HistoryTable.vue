@@ -132,4 +132,37 @@ function copyText(prompt) {
         height: 170px;
     }
 }
+
+@media (max-width: 640px) {
+    .history-item {
+        grid-template-columns: 74px 1fr;
+        gap: 0.55rem;
+        align-items: start;
+        padding: 0.62rem;
+    }
+
+    .history-thumb {
+        width: 74px;
+        height: 74px;
+        object-fit: cover;
+    }
+
+    .history-text {
+        font-size: 0.92rem;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .history-meta {
+        margin-top: 0.35rem;
+    }
+
+    .history-item .btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+}
 </style>
