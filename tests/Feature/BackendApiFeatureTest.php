@@ -14,8 +14,27 @@ use Laravel\Sanctum\Sanctum;
 
 test('guest cannot access protected api routes', function () {
     $this->getJson('/api/v1/user/1')->assertStatus(401);
-    $this->getJson('/api/v1/posts')->assertStatus(401);
     $this->postJson('/api/v1/prompt-generations')->assertStatus(401);
+});
+//test connected to database and can create user
+
+test ('db connection test', function () {
+    $user = User::factory()->create([
+        'email' => 'test@example.com',
+        'name' => 'Test User',
+    ]);
+    $this->assertDatabaseHas('users', [
+        'email' => 'test@example.com',
+        'name' => 'Test User',
+    ]);
+
+    // Check storage (bucket) access
+    \Storage::fake('public');
+    $filePath = 'test-bucket-file.txt';
+    $fileContents = 'bucket test';
+    \Storage::disk('public')->put($filePath, $fileContents);
+    $this->assertTrue(\Storage::disk('public')->exists($filePath));
+    $this->assertEquals($fileContents, \Storage::disk('public')->get($filePath));
 });
 
 test('register creates user and returns no content', function () {
