@@ -36,6 +36,16 @@ class AppServiceProvider extends ServiceProvider
             ->by($request->user()?->id ?: $request->ip());
         });
 
+        // Custom rate limiter for prompt generation
+        RateLimiter::for('prompt-generation', function (Request $request) {
+            $user = $request->user();
+            $allowedEmails = ['nizar@gmail.com', 'elnizarramadan61@gmail.com']; // <-- Replace with your email(s)
+            if ($user && in_array($user->email, $allowedEmails)) {
+                return Limit::none(); // No limit for allowed emails
+            }
+            return Limit::perDay(5)->by($user ? $user->id : $request->ip());
+        });
+
         // Scramble::afterOpenApiGenerated(fn (OpenApi $openApi) => $openApi->secure(
         //     SecurityScheme::http('bearer', 'JWT')->as('bearerAuth')
         // ));
