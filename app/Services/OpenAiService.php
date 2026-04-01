@@ -34,57 +34,65 @@ class OpenAiService
                             ]
                         ],
                         [
-                             'type' => 'text',
-                           'text' => "Analyze this image and generate a detailed, descriptive
-                            prompt that could be used to recreate a similar image with AI image 
-                            generation tools. The prompt should be comprehensive, describing the 
-                            visual elements, style, composition, lighting, colors, and any other 
-                            relevant details. Make it detailed enough that someone could use it 
-                            to generate a similar image. You MUST preserve aspect ratio exact as 
-                            the original image has or very close to it. "
-
-                        //    'type' =>  'text',
-                        //     'text' => "You are an expert visual analyst and prompt engineer.
-                        //     Your task is to analyze the provided image and generate a highly detailed,  descriptive
+                        //      'type' => 'text',
+                        //    'text' => "Analyze this image and generate a detailed, descriptive
                         //     prompt that could be used to recreate a similar image with AI image 
-                        //     generation tools.
-                        //     Follow these rules strictly:
-                        //     1. Describe the image with extreme specificity, covering:
-                        //          - Main subject(s) (appearance, pose, expression, materials)
-                        //          - Environment / background (setting, depth, context)
-                        //          - Composition (framing, angle, perspective, focal point)
-                        //          - Lighting (type, direction, intensity, shadows, highlights)
-                        //          - Color palette (dominant tones, contrast, grading style)
-                        //          - Style (photorealistic, cinematic, illustration, 3D, etc.)
-                        //          - Texture and details (surfaces, reflections, imperfections)
-                        //          - Camera details (lens type, focal length, depth of field, bokeh)
-                        //          - Mood / atmosphere (emotional tone, storytelling feel)
-                                 
-                        //          2. Infer technical details when not explicitly visible:
-                        //          - Camera: (e.g., 35mm, 85mm, macro)
-                        //          - Lighting setup (studio, natural light, HDR, softbox, etc.)
-                        //          - Rendering style (Octane, Unreal Engine, film photography, etc.)
-                                 
-                        //          3. Reconstruct this into a SINGLE, clean, generation-ready prompt:
-                        //          - No explanations
-                        //          - No bullet points
-                        //          - No headings
-                        //          - Just one continuous, well-structured prompt
-                                 
-                        //          4. Add generation-enhancing keywords where appropriate:
-                        //          - \"ultra-detailed", "8k", "highly realistic", "cinematic lighting\", etc.
-                        //          -  But DO NOT overstuff keywords — keep it natural and coherent
-                                 
-                        //          5. Aspect Ratio (VERY IMPORTANT):
-                        //          - Detect the image aspect ratio precisely (e.g., 1:1, 16:9, 4:5, 9:16)
-                        //          - Append it at the end in this format:
-                        //             --ar WIDTH:HEIGHT
-                              
-                        //          6. Do NOT hallucinate irrelevant elements.
-                                 
-                        //          7. Stay faithful to the image.
-                                 
-                        //          Output ONLY the final prompt."
+                        //     generation tools. The prompt should be comprehensive, describing the 
+                        //     visual elements, style, composition, lighting, colors, and any other 
+                        //     relevant details. Make it detailed enough that someone could use it 
+                        //     to generate a similar image. You MUST preserve aspect ratio exact as 
+                        //     the original image has or very close to it. "
+
+                        'type' => 'text',
+'text' => "
+You are a high-precision visual reconstruction engine.
+
+Your task is to convert an input image into a generation-ready prompt that can reproduce it with maximum visual fidelity.
+
+Strict rules:
+
+1. Only include elements that are visually verifiable. Do NOT infer meaning, story, or intent.
+
+2. Prioritize spatial accuracy:
+- Specify exact positioning (center, left, foreground, background)
+- Define relative scale (e.g. occupies ~60% of frame)
+- Maintain correct depth relationships
+
+3. Use dense, technical, objective language:
+- No storytelling
+- No emotional or poetic phrasing
+- No vague adjectives (e.g. beautiful, stunning)
+
+4. Maintain this implicit order (do NOT output labels):
+subject → composition → environment → style → lighting → color → camera → constraints
+
+5. Be explicit about:
+- camera angle (top-down, eye-level, low angle, etc.)
+- framing (close-up, medium shot, wide shot)
+- depth of field (shallow, deep)
+- lighting direction and softness
+- texture and material properties
+
+6. Add HARD constraints to prevent deviation:
+- explicitly state what must NOT appear
+- prevent style drift (e.g. no illustration, no cartoon, no abstraction unless present)
+
+7. Infer technical details ONLY if required for accurate reconstruction.
+
+8. Keep output as ONE dense paragraph:
+- no line breaks
+- no bullet points
+- no explanations
+
+9. Add a small number of quality terms naturally:
+(e.g. ultra-detailed, highly realistic, cinematic lighting)
+Do NOT keyword spam.
+
+10. Append exact aspect ratio:
+--ar WIDTH:HEIGHT
+
+Output ONLY the final prompt.
+"
                         ]
                     ]
                 ]
