@@ -43,7 +43,8 @@ class OpenAiService
                             to generate a similar image. You MUST preserve aspect ratio exact as 
                             the original image has or very close to it. "*/
 
-                           'type' =>  'text', "You are an expert visual analyst and prompt engineer.
+                           'type' =>  'text',
+                            'text' => "You are an expert visual analyst and prompt engineer.
                             Your task is to analyze the provided image and generate a highly detailed, structured prompt suitable for AI image generation tools (such as Midjourney, DALL·E, or Stable Diffusion).
                             Follow these rules strictly:
                             1. Describe the image with extreme specificity, covering:
