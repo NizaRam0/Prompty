@@ -1,11 +1,13 @@
 <script setup>
 // Upload page handles complete image -> prompt generation flow.
-import { computed, onBeforeUnmount, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import FileDropzone from "../components/FileDropzone.vue";
 import GeneratedPromptCard from "../components/GeneratedPromptCard.vue";
 import InlineAlert from "../components/InlineAlert.vue";
 import { uploadImageAndGeneratePrompt } from "../services/promptGenerationService";
 import { getToken } from "../services/apiClient";
+import { fetchCurrentUser } from "../services/userService";
+import { getCurrentUserId } from "../services/authService";
 import {
     hasAuthToken,
     validateImageDimensions,
@@ -18,11 +20,42 @@ const latestResult = ref(null);
 const loading = ref(false);
 const errorMessage = ref("");
 const successMessage = ref("");
+const generationDurationMs = ref(null);
+const quota = ref(null);
+const quotaLoading = ref(false);
+
+const isQuotaExhausted = computed(() => {
+    if (!quota.value || quota.value.daily_generation_unlimited) return false;
+    return (quota.value.daily_generation_remaining ?? 0) <= 0;
+});
 
 // Button is disabled unless valid file exists and request is not in progress.
 const canSubmit = computed(() => {
     const validation = validateImageFile(selectedFile.value);
-    return validation.valid && !loading.value && hasAuthToken(getToken());
+    return (
+        validation.valid &&
+        !loading.value &&
+        hasAuthToken(getToken()) &&
+        !isQuotaExhausted.value
+    );
+});
+
+const quotaText = computed(() => {
+    if (!quota.value) return "";
+
+    if (quota.value.daily_generation_unlimited) {
+        return "You have unlimited generations.";
+    }
+
+    const remaining = quota.value.daily_generation_remaining ?? 0;
+    return remaining === 1
+        ? "You have 1 generation left today."
+        : `You have ${remaining} generations left today.`;
+});
+
+const quotaDangerText = computed(() => {
+    if (!isQuotaExhausted.value) return "";
+    return "You have 0 generations left today. Generation is disabled. Try again tomorrow!";
 });
 
 // Updates selected image and creates local preview URL.
@@ -49,6 +82,22 @@ async function setFile(file) {
     previewUrl.value = URL.createObjectURL(file);
 }
 
+async function loadQuota() {
+    const userId = getCurrentUserId();
+    if (!userId) return;
+
+    quotaLoading.value = true;
+
+    try {
+        const profile = await fetchCurrentUser(userId);
+        quota.value = profile;
+    } catch {
+        quota.value = null;
+    } finally {
+        quotaLoading.value = false;
+    }
+}
+
 // Frees object URL memory when file is removed or page is unmounted.
 function clearPreview() {
     if (previewUrl.value) URL.revokeObjectURL(previewUrl.value);
@@ -57,16 +106,27 @@ function clearPreview() {
 
 // Sends image to API and stores generated prompt response.
 async function submitGeneration() {
+    if (isQuotaExhausted.value) {
+        errorMessage.value =
+            "You have 0 generations left today. Please wait for reset.";
+        successMessage.value = "";
+        return;
+    }
+
     if (!canSubmit.value) return;
 
     loading.value = true;
     errorMessage.value = "";
     successMessage.value = "";
+    generationDurationMs.value = null;
+    const startedAt = performance.now();
 
     try {
         latestResult.value = await uploadImageAndGeneratePrompt(
             selectedFile.value,
         );
+        generationDurationMs.value = Math.round(performance.now() - startedAt);
+        loadQuota();
         successMessage.value = "Prompt generated successfully.";
     } catch (error) {
         errorMessage.value =
@@ -80,6 +140,10 @@ async function submitGeneration() {
 function regenerate() {
     submitGeneration();
 }
+
+onMounted(() => {
+    loadQuota();
+});
 
 onBeforeUnmount(() => {
     clearPreview();
@@ -124,28 +188,48 @@ onBeforeUnmount(() => {
                 <div class="actions">
                     <button
                         class="btn btn-primary"
+                        :class="{ 'btn-limit-disabled': isQuotaExhausted }"
                         type="button"
                         :disabled="!canSubmit"
                         @click="submitGeneration"
                     >
-                        {{ loading ? "Generating..." : "Generate Prompt" }}
+                        {{
+                            loading
+                                ? "Generating..."
+                                : isQuotaExhausted
+                                  ? "Daily Limit Reached"
+                                  : "Generate Prompt"
+                        }}
                     </button>
                     <button
                         class="btn btn-ghost"
                         type="button"
-                        :disabled="!latestResult || loading"
+                        :disabled="!latestResult || loading || isQuotaExhausted"
                         @click="regenerate"
                     >
                         Regenerate
                     </button>
                 </div>
 
+                <p v-if="quotaLoading" class="muted helper-note">
+                    Loading daily generation limit...
+                </p>
+                <p v-if="quotaDangerText" class="quota-note danger-note">
+                    {{ quotaDangerText }}
+                </p>
+                <p v-else-if="quotaText" class="quota-note">
+                    {{ quotaText }}
+                </p>
+
                 <p v-if="!hasAuthToken(getToken())" class="muted helper-note">
                     Please login or register first to continue.
                 </p>
             </article>
 
-            <GeneratedPromptCard :item="latestResult" />
+            <GeneratedPromptCard
+                :item="latestResult"
+                :generation-duration-ms="generationDurationMs"
+            />
         </div>
     </section>
 </template>
@@ -195,6 +279,24 @@ onBeforeUnmount(() => {
 
 .helper-note {
     margin-top: 0.65rem;
+}
+
+.quota-note {
+    margin-top: 0.65rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.danger-note {
+    color: var(--status-error);
+}
+
+.btn-limit-disabled:disabled {
+    opacity: 0.3;
+    color: #ffffff;
+    background: linear-gradient(135deg,var(--status-error), #7f1d1d);
+    border-color: rgba(248, 113, 113, 0.45);
+    box-shadow: none;
 }
 
 @media (max-width: 940px) {

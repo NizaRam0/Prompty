@@ -11,11 +11,19 @@ use App\Http\Requests\GeneratePromptRequest;
 use App\Http\Resources\PromptGenerationResource;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\Group;
+use Illuminate\Support\Facades\RateLimiter;
 
 #[Group('Prompt Generations', 'Upload images and generate prompts', 10)]
 class PromptGenerationController extends Controller
 
 {
+    private const DAILY_PROMPT_LIMIT = 5;
+
+    private const UNLIMITED_EMAILS = [
+        'nizar@gmail.com',
+        'elnizarramadan61@gmail.com',
+    ];
+
     public function __construct(private OpenAiService $openAiService)
     {
     }
@@ -81,6 +89,13 @@ class PromptGenerationController extends Controller
     public function store(GeneratePromptRequest $request) //generate image from prompt
     {
         $user = $request->user();
+
+        if ($this->isQuotaExhausted($request)) {
+            return response()->json([
+                'message' => 'You have reached your daily generation limit. Please try again later.',
+            ], 429);
+        }
+
         $image = $request->file('image');
         $originalName = $image->getClientOriginalName();
         $sanitizedName= preg_replace('/[^a-zA-Z0-9_\.-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
@@ -144,5 +159,18 @@ class PromptGenerationController extends Controller
         }
 
         return 'public';
+    }
+
+    private function isQuotaExhausted(Request $request): bool
+    {
+        $user = $request->user();
+
+        if ($user && in_array($user->email, self::UNLIMITED_EMAILS, true)) {
+            return false;
+        }
+
+        $key = (string) ($user?->id ?: $request->ip());
+
+        return RateLimiter::tooManyAttempts($key, self::DAILY_PROMPT_LIMIT);
     }
 }

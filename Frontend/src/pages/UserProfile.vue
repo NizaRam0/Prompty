@@ -36,6 +36,19 @@ const joinedOn = computed(() => {
   })
 })
 
+const dailyGenerationText = computed(() => {
+  if (!profile.value) return ''
+
+  if (profile.value.daily_generation_unlimited) {
+    return 'Unlimited generations'
+  }
+
+  const remaining = profile.value.daily_generation_remaining ?? 0
+  return remaining === 1
+    ? '1 generation left today'
+    : `${remaining} generations left today`
+})
+
 function clearMessages() {
   errorMessage.value = ''
   successMessage.value = ''
@@ -151,6 +164,10 @@ onMounted(() => {
             <div class="stat-item">
               <dt>Prompts Generated</dt>
               <dd>{{ profile.number_of_prompts_generated || 0 }}</dd>
+            </div>
+            <div class="stat-item">
+              <dt>Daily Limit</dt>
+              <dd>{{ dailyGenerationText }}</dd>
             </div>
             <div class="stat-item">
               <dt>Joined</dt>

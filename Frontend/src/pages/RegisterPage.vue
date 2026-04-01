@@ -1,6 +1,7 @@
 <script setup>
 // Register page creates account and then performs automatic login to capture token.
 import { reactive, ref } from "vue";
+import WelcomePopup from "../components/WelcomePopup.vue";
 import { useRouter, RouterLink } from "vue-router";
 import InlineAlert from "../components/InlineAlert.vue";
 import { registerAndLogin } from "../services/authService";
@@ -17,6 +18,7 @@ const form = reactive({
 const loading = ref(false);
 const errorMessage = ref("");
 const successMessage = ref("");
+const showWelcome = ref(false);
 
 // Performs register request and then automatic login when successful.
 async function submitRegister() {
@@ -26,9 +28,8 @@ async function submitRegister() {
 
     try {
         await registerAndLogin({ ...form });
-        successMessage.value =
-            "Account created and authenticated. Redirecting...";
-        await router.push("/");
+        showWelcome.value = true;
+        // Wait for popup close before redirecting
     } catch (error) {
         errorMessage.value =
             error?.message || "Registration failed. Please verify your input.";
@@ -40,6 +41,7 @@ async function submitRegister() {
 
 <template>
     <section class="auth-page">
+        <WelcomePopup :show="showWelcome" @close="() => { showWelcome.value = false; router.push('/') }" />
         <article class="auth-card glass-card">
             <h2 class="section-title">Create Account</h2>
             <p class="muted">

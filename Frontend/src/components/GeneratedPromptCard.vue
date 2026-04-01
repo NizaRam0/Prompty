@@ -43,14 +43,7 @@ async function deletePrompt() {
             >
                 {{ copied ? "Copied" : "Copy Prompt" }}
             </button>
-            <button
-                class="btn btn-secondary"
-                type="button"
-                :disabled="!hasPrompt"
-                @click="copyPrompt"
-            >
-                {{ copied ? "Copied" : "Copy Prompt" }}
-            </button>
+            
         </div>
 
         <p v-if="hasPrompt" class="prompt-body">{{ item.generated_prompt }}</p>
