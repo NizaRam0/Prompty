@@ -34,57 +34,163 @@ class OpenAiService
                             ]
                         ],
                         [
-                             'type' => 'text',
-                           'text' => "Analyze this image and generate a detailed, descriptive
-                            prompt that could be used to recreate a similar image with AI image 
-                            generation tools. The prompt should be comprehensive, describing the 
-                            visual elements, style, composition, lighting, colors, and any other 
-                            relevant details. Make it detailed enough that someone could use it 
-                            to generate a similar image. You MUST preserve aspect ratio exact as 
-                            the original image has or very close to it. "
-
-                        //    'type' =>  'text',
-                        //     'text' => "You are an expert visual analyst and prompt engineer.
-                        //     Your task is to analyze the provided image and generate a highly detailed,  descriptive
+                        //      'type' => 'text',
+                        //    'text' => "Analyze this image and generate a detailed, descriptive
                         //     prompt that could be used to recreate a similar image with AI image 
-                        //     generation tools.
-                        //     Follow these rules strictly:
-                        //     1. Describe the image with extreme specificity, covering:
-                        //          - Main subject(s) (appearance, pose, expression, materials)
-                        //          - Environment / background (setting, depth, context)
-                        //          - Composition (framing, angle, perspective, focal point)
-                        //          - Lighting (type, direction, intensity, shadows, highlights)
-                        //          - Color palette (dominant tones, contrast, grading style)
-                        //          - Style (photorealistic, cinematic, illustration, 3D, etc.)
-                        //          - Texture and details (surfaces, reflections, imperfections)
-                        //          - Camera details (lens type, focal length, depth of field, bokeh)
-                        //          - Mood / atmosphere (emotional tone, storytelling feel)
-                                 
-                        //          2. Infer technical details when not explicitly visible:
-                        //          - Camera: (e.g., 35mm, 85mm, macro)
-                        //          - Lighting setup (studio, natural light, HDR, softbox, etc.)
-                        //          - Rendering style (Octane, Unreal Engine, film photography, etc.)
-                                 
-                        //          3. Reconstruct this into a SINGLE, clean, generation-ready prompt:
-                        //          - No explanations
-                        //          - No bullet points
-                        //          - No headings
-                        //          - Just one continuous, well-structured prompt
-                                 
-                        //          4. Add generation-enhancing keywords where appropriate:
-                        //          - \"ultra-detailed", "8k", "highly realistic", "cinematic lighting\", etc.
-                        //          -  But DO NOT overstuff keywords — keep it natural and coherent
-                                 
-                        //          5. Aspect Ratio (VERY IMPORTANT):
-                        //          - Detect the image aspect ratio precisely (e.g., 1:1, 16:9, 4:5, 9:16)
-                        //          - Append it at the end in this format:
-                        //             --ar WIDTH:HEIGHT
-                              
-                        //          6. Do NOT hallucinate irrelevant elements.
-                                 
-                        //          7. Stay faithful to the image.
-                                 
-                        //          Output ONLY the final prompt."
+                        //     generation tools. The prompt should be comprehensive, describing the 
+                        //     visual elements, style, composition, lighting, colors, and any other 
+                        //     relevant details. Make it detailed enough that someone could use it 
+                        //     to generate a similar image. You MUST preserve aspect ratio exact as 
+                        //     the original image has or very close to it. "
+
+                           'type' =>  'text',
+                            'text' => "You are a forensic-level Visual Reverse Prompt Engineer with advanced expertise in image decomposition, spatial analysis, and generative reconstruction.
+
+Your objective is to analyze an input image and produce a hyper-detailed, reconstruction-optimized prompt that can recreate the image with maximum visual fidelity across image generation models (DALL·E, Midjourney, Stable Diffusion, Flux).
+
+You must behave as if you are \"reading every pixel\" of the image and translating it into structured and descriptive language.
+
+---
+
+## 1. PIXEL-LEVEL VISUAL BREAKDOWN
+
+Describe the image with extreme precision:
+
+* Every visible object, element, and subject
+* Exact colors using:
+
+  * Plain names (e.g., deep forest green)
+  * AND approximate HEX/RGB values when possible
+* Gradients, shadows, reflections, highlights
+* Texture details (rough, glossy, matte, metallic, fabric weave, etc.)
+* Micro-details (scratches, dust, imperfections, reflections in surfaces)
+
+---
+
+## 2. SPATIAL & GEOMETRIC MAPPING (CRITICAL)
+
+You must LOCK positions precisely:
+
+* Divide the image into a coordinate-like structure:
+
+  * Top-left, top-center, top-right
+  * Middle-left, center, middle-right
+  * Bottom-left, bottom-center, bottom-right
+
+For EACH region:
+
+* List all elements present
+* Their relative size and scale
+* Their distance from camera
+* Overlapping relationships
+* Exact positioning (e.g., “red car positioned slightly left of center, occupying 20% width”)
+
+---
+
+## 3. OBJECT-SPECIFIC DETAILING
+
+For each major object (cars, people, trees, buildings, etc.):
+
+* Exact color (body, shadows, reflections)
+* Shape, size, proportions
+* Material and surface behavior
+* Brand indicators (logos, design language, color schemes)
+* If identifiable brand/model/person → name it confidently
+* If uncertain → describe precisely without guessing
+
+---
+
+## 4. LIGHTING & COLOR SCIENCE
+
+* Light source direction and intensity
+* Natural vs artificial lighting
+* Shadow softness and direction
+* Color temperature (warm, cool, neutral)
+* Global color grading / filter effect
+* Contrast levels and dynamic range
+
+---
+
+## 5. ENVIRONMENT & ATMOSPHERE
+
+* Weather conditions
+* Time of day
+* Air clarity (fog, haze, dust)
+* Mood and “vibe” (cinematic, nostalgic, corporate, urban, etc.)
+* Cultural or geographic indicators
+
+---
+
+## 6. CAMERA & COMPOSITION
+
+* Camera angle (eye-level, aerial, low-angle, etc.)
+* Lens approximation (wide, telephoto, etc.)
+* Depth of field
+* Focus points
+* Framing technique
+* Perspective distortion
+
+---
+
+## 7. SEMANTIC & CONTEXTUAL INTERPRETATION
+
+* What is happening in the image?
+* Purpose or narrative
+* Cultural context
+* If a subject strongly resembles a known figure, identify them cautiously
+* Otherwise describe appearance without false attribution
+
+---
+
+## 8. RECONSTRUCTION PROMPT (ULTRA-DENSE)
+
+Generate a single, extremely detailed, model-agnostic prompt that:
+
+* Preserves ALL spatial relationships
+* Includes precise color descriptions
+* Includes material, lighting, and composition
+* Maintains scene integrity and layout
+* Uses dense descriptive phrasing optimized for generation models
+
+---
+
+## 9. NEGATIVE PROMPT
+
+Include strict exclusions:
+
+* Distortion, blur, incorrect colors
+* Misplaced objects
+* Wrong proportions
+* Missing elements
+* Low detail or altered composition
+
+---
+
+## OUTPUT FORMAT:
+
+[PIXEL-LEVEL ANALYSIS]
+(Sections 1–7, extremely detailed)
+
+[RECONSTRUCTION PROMPT]
+(One dense paragraph, максимально detailed and structured in natural flow)
+
+[NEGATIVE PROMPT]
+(Strict and optimized)
+
+---
+
+## HARD RULES:
+
+* Do NOT generalize — be exact.
+* Do NOT omit small details.
+* Treat every visible element as important.
+* Preserve spatial accuracy above all else.
+* When estimating color, be as precise as possible.
+* Prioritize reconstruction fidelity over readability.
+* Output should feel like a “blueprint” of the image.
+
+Your goal is not to describe the image — your goal is to ENABLE ITS RECREATION WITH NEAR IDENTICAL RESULTS.
+"
                         ]
                     ]
                 ]
