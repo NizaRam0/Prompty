@@ -4,16 +4,12 @@
       <h2>Welcome to Your AI-Powered Creative Assistant</h2>
   
   <p>
-    Upload an image and instantly get <b>high-quality, ready-to-use prompts</b> for tools like 
-    <i>Midjourney</i> or <i>DALL·E</i>.
+    Upload an image and instantly get <b>high-quality, ready-to-use prompts</b> for other Ai tools like 
   </p>
   
-  <p>
-    Easily <b>save</b>, <b>organize</b>, and <b>refine</b> your prompts—all in one place.
-  </p>
   
   <p>
-    <b>Demo Access:</b> You get <b>5 prompt generations per day</b> to explore the platform.
+    <b style="text-decoration: underline; color: var(--accent);">Demo Access:</b> You get <b style="text-decoration: underline;">5 prompt generations per day</b> to explore the platform.
   </p>
       <button class="btn btn-primary" @click="$emit('close')">OK</button>
     </div>
@@ -52,11 +48,12 @@ defineEmits(['close']);
 }
 .popup-card h2 {
     color: var(--accent);
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.6rem;
 }
 .popup-card p {
     color: var(--text-secondary);
   margin-bottom: 1.2rem;
   font-size: 0.8rem;
 }
+
 </style>
