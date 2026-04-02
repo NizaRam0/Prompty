@@ -12,6 +12,7 @@ use App\Http\Resources\PromptGenerationResource;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Http\Resources\UserResource;
 
 #[Group('Prompt Generations', 'Upload images and generate prompts', 10)]
 class PromptGenerationController extends Controller
@@ -115,16 +116,20 @@ class PromptGenerationController extends Controller
 
         //$this->openAiService->generatePromptForImage($image);
          $generatedPrompt = $this->openAiService->generatePromptForImage($image);
-         $promptGeneration= $user->PromptGenerations()->create([
-            'generated_prompt' => $generatedPrompt,
-            'image_path' => $imagePath,
-            'original_file_name' => $originalName,
-            'file_size' => $image->getSize(),
-            'mime_type' => $image->getMimeType(),
-         ]);
-         return new PromptGenerationResource($promptGeneration);
-    
-        }
+            $promptGeneration= $user->PromptGenerations()->create([
+                'generated_prompt' => $generatedPrompt,
+                'image_path' => $imagePath,
+                'original_file_name' => $originalName,
+                'file_size' => $image->getSize(),
+                'mime_type' => $image->getMimeType(),
+            ]);
+
+            // Return both the prompt generation and the updated user quota
+            return response()->json([
+                 'prompt_generation' => new PromptGenerationResource($promptGeneration),
+                 'user_quota' => new UserResource($user),
+            ]);
+          }
     #[Endpoint(title: 'Delete Prompt Generation', description: 'Delete one prompt generation that belongs to the authenticated user.')]
     public function destroy(Request $request, PromptGeneration $promptGeneration)
     {

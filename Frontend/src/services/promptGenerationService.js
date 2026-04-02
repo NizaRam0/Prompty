@@ -65,8 +65,15 @@ export async function uploadImageAndGeneratePrompt(file) {
 
   const response = await apiPostForm('/prompt-generations', formData)
 
-  // API may return wrapped or direct payload depending on resource formatting.
-  return normalizeItem(response?.data || response)
+  // If new API response contains both prompt_generation and user_quota, return both
+  if (response && response.prompt_generation && response.user_quota) {
+    return {
+      prompt: normalizeItem(response.prompt_generation?.data || response.prompt_generation),
+      userQuota: response.user_quota,
+    }
+  }
+  // Fallback for legacy response
+  return { prompt: normalizeItem(response?.data || response), userQuota: null }
 }
 
 // Sort function applied client-side so UI can provide sorting without backend dependency.
