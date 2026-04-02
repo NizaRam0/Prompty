@@ -124,6 +124,8 @@ class PromptGenerationController extends Controller
                 'mime_type' => $image->getMimeType(),
             ]);
 
+            $this->incrementQuota($request);
+
             // Return both the prompt generation and the updated user quota
             return response()->json([
                  'prompt_generation' => new PromptGenerationResource($promptGeneration),
@@ -177,5 +179,18 @@ class PromptGenerationController extends Controller
         $key = (string) ($user?->id ?: $request->ip());
 
         return RateLimiter::tooManyAttempts($key, self::DAILY_PROMPT_LIMIT);
+    }
+
+    private function incrementQuota(Request $request): void
+    {
+        $user = $request->user();
+
+        if ($user && in_array($user->email, self::UNLIMITED_EMAILS, true)) {
+            return;
+        }
+
+        $key = (string) ($user?->id ?: $request->ip());
+        
+        RateLimiter::hit($key, 86400);
     }
 }
