@@ -71,7 +71,7 @@ function toggleForgotPanel() {
         <article class="auth-card glass-card">
             <h2 class="section-title">Sign In</h2>
             <p class="muted">
-            Login to your account to start generating cinematic prompts with AI. No account? <RouterLink to="/register">Create one</RouterLink>. 
+            Login to your account to start generating cinematic prompts with AI. 
                 </p>
 
             <InlineAlert
@@ -108,7 +108,7 @@ function toggleForgotPanel() {
                     />
                 </div>
 
-                <button
+                <!-- <button
                     class="forgot-link"
                     type="button"
                     @click="toggleForgotPanel"
@@ -140,8 +140,8 @@ function toggleForgotPanel() {
                                 ? "Sending reset link..."
                                 : "Send reset link"
                         }}
-                    </button>
-                </div>
+                    </button> 
+                </div>-->
 
                 <button
                     class="btn btn-primary"
