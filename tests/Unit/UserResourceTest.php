@@ -38,6 +38,10 @@ test('user resource includes expected attributes and prompt generation count', f
         'name',
         'email',
         'number_of_prompts_generated',
+        'daily_generation_limit',
+        'daily_generation_remaining',
+        'daily_generation_used',
+        'daily_generation_unlimited',
         'created_at',
         'updated_at',
     ]);
@@ -45,6 +49,8 @@ test('user resource includes expected attributes and prompt generation count', f
     expect($payload['id'])->toBe($user->id);
     expect($payload['email'])->toBe($user->email);
     expect($payload['number_of_prompts_generated'])->toBe(2);
+    expect($payload['daily_generation_limit'])->toBe(5);
+    expect($payload['daily_generation_unlimited'])->toBe(false);
     expect($payload['created_at'])->toMatch('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/');
     expect($payload['updated_at'])->toMatch('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/');
 });
