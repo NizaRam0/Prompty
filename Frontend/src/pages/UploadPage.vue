@@ -126,7 +126,12 @@ async function submitGeneration() {
             selectedFile.value,
         );
         generationDurationMs.value = Math.round(performance.now() - startedAt);
-        loadQuota();
+        // Optimistically update quota for instant UI feedback
+        if (quota.value && !quota.value.daily_generation_unlimited && typeof quota.value.daily_generation_remaining === 'number') {
+            quota.value.daily_generation_remaining = Math.max(0, quota.value.daily_generation_remaining - 1);
+            quota.value.daily_generation_used = (quota.value.daily_generation_used ?? 0) + 1;
+        }
+        loadQuota(); // Still sync with backend
         successMessage.value = "Prompt generated successfully.";
     } catch (error) {
         errorMessage.value =

@@ -37,11 +37,16 @@ async function submitRegister() {
         loading.value = false;
     }
 }
+
+function handleWelcomeClose() {
+    showWelcome.value = false;
+    router.push('/');
+}
 </script>
 
 <template>
     <section class="auth-page">
-        <WelcomePopup :show="showWelcome" @close="() => { showWelcome.value = false; router.push('/') }" />
+        <WelcomePopup :show="showWelcome" @close="handleWelcomeClose" />
         <article class="auth-card glass-card">
             <h2 class="section-title">Create Account</h2>
             <p class="muted">
