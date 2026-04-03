@@ -10,6 +10,8 @@
   
   <p>
     <b style="text-decoration: underline; color: var(--accent);">Demo Access:</b> You get <b style="text-decoration: underline;">5 prompt generations per day</b> to explore the platform.
+     <br>
+     <sub style="color: var(--accent); font-size:20px;font-family:cursive;"> ~NR </sub>
   </p>
       <button class="btn btn-primary" @click="$emit('close')">OK</button>
     </div>
